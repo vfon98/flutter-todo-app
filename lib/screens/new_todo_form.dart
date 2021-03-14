@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:todo_ptn_tech_talks/main.dart';
+import 'package:todo_ptn_tech_talks/models/todo.dart';
 import 'package:todo_ptn_tech_talks/widgets/app_bar/my_app_bar.dart';
 
 class NewTodoFormScreen extends StatelessWidget {
@@ -24,9 +27,25 @@ class TodoForm extends StatefulWidget {
 
 class _TodoFormState extends State<TodoForm> {
   final _formKey = new GlobalKey<FormState>();
+  final Todo newTodo = new Todo('', '', '', '');
+
+  TimeOfDay _selectedTime;
+  TextEditingController _controllerTime = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _controllerTime.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    _controllerTime.text = TimeOfDay.now().format(context);
     return Container(
       padding: EdgeInsets.all(16),
       child: Form(
@@ -35,9 +54,16 @@ class _TodoFormState extends State<TodoForm> {
           children: <Widget>[
             TextFormField(
               decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Title',
-                  helperText: 'Ex: Learn Flutter'),
+                border: OutlineInputBorder(),
+                labelText: 'Title',
+                helperText: 'Ex: Learn Flutter',
+              ),
+              validator: (value) {
+                return value.isNotEmpty ? null : 'Title is required';
+              },
+              onSaved: (value) {
+                newTodo.title = value;
+              },
             ),
             SizedBox(height: 16),
             TextFormField(
@@ -45,14 +71,22 @@ class _TodoFormState extends State<TodoForm> {
                   border: OutlineInputBorder(),
                   labelText: 'Description',
                   helperText: 'Ex: Participate PTN Tech Talks'),
+              onSaved: (value) {
+                newTodo.description = value;
+              },
             ),
             SizedBox(height: 16),
             TextFormField(
-              initialValue: TimeOfDay.now().format(context),
+              controller: _controllerTime,
               onTap: () async {
-                var result = await showTimePicker(
+                TimeOfDay result = await showTimePicker(
                     context: context, initialTime: TimeOfDay.now());
+                _selectedTime = result;
+                _controllerTime.text = result.format(context);
                 print(result);
+              },
+              onSaved: (value) {
+                newTodo.time = value;
               },
               readOnly: true,
               decoration: InputDecoration(
@@ -66,10 +100,11 @@ class _TodoFormState extends State<TodoForm> {
               width: double.infinity,
               child: ElevatedButton(
                 child: Text('Confirm'),
-                onPressed: () async {
-                  var result = await showTimePicker(
-                      context: context, initialTime: TimeOfDay.now());
-                  print(result);
+                onPressed: () {
+                  if (_formKey.currentState.validate()) {
+                    _formKey.currentState.save();
+                    Navigator.pop(context, newTodo);
+                  }
                 },
               ),
             )

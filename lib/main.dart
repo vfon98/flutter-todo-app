@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:todo_ptn_tech_talks/screens/details_todo.dart';
 import 'package:todo_ptn_tech_talks/screens/new_todo_form.dart';
@@ -42,9 +44,11 @@ class MyHomePage extends StatelessWidget {
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.add),
           tooltip: 'Add new todo',
-          onPressed: () {
-            Navigator.push(context,
+          onPressed: () async {
+            final newTodo = await Navigator.push(context,
                 MaterialPageRoute(builder: (ctx) => NewTodoFormScreen()));
+            print('===== CLOSED ===');
+            inspect(newTodo);
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
