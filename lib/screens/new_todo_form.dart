@@ -1,7 +1,4 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
-import 'package:todo_ptn_tech_talks/main.dart';
 import 'package:todo_ptn_tech_talks/models/todo.dart';
 import 'package:todo_ptn_tech_talks/widgets/app_bar/my_app_bar.dart';
 
@@ -98,8 +95,12 @@ class _TodoFormState extends State<TodoForm> {
             SizedBox(height: 16),
             Container(
               width: double.infinity,
+              height: 50,
               child: ElevatedButton(
-                child: Text('Confirm'),
+                child: Text(
+                  'Confirm',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                ),
                 onPressed: () {
                   if (_formKey.currentState.validate()) {
                     _formKey.currentState.save();

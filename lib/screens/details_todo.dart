@@ -14,18 +14,61 @@ class DetailsTodoScreen extends StatelessWidget {
       appBar: MyAppBar(
         title: Text(todo.title),
       ),
-      body: Column(
-        children: [
-          Text(todo.title),
-          Text(todo.time),
-          Text(todo.description),
-          ElevatedButton(
-            child: Text('Back'),
-            onPressed: () {
-              Navigator.pop(context);
-            },
-          )
-        ],
+      body: Container(
+        width: double.infinity,
+        padding: EdgeInsets.all(8),
+        child: Card(
+          child: Container(
+            padding: EdgeInsets.all(8),
+            child: Column(
+              children: [
+                ListTile(
+                  title: Text(
+                    todo.title,
+                    style: TextStyle(fontSize: 20),
+                  ),
+                  leading: FlutterLogo(
+                    size: 32,
+                  ),
+                ),
+                ListTile(
+                  title: Text(todo.description),
+                  leading: Text(
+                    'Description:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+                ListTile(
+                  title: Text(todo.time),
+                  leading: Text(
+                    'Time:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                ),
+                SizedBox(height: 16),
+                Container(
+                  height: 40,
+                  width: double.infinity,
+                  child: ElevatedButton(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.arrow_back_ios),
+                        Text(
+                          'Back',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                  ),
+                )
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
