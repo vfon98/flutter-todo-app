@@ -28,8 +28,6 @@ class HomeScreen extends StatelessWidget {
           onPressed: () async {
             final newTodo = await Navigator.push(context,
                 MaterialPageRoute(builder: (ctx) => NewTodoFormScreen()));
-            print('===== CLOSED ===');
-            inspect(newTodo);
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,

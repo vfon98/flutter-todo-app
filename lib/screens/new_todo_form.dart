@@ -11,7 +11,6 @@ class NewTodoFormScreen extends StatelessWidget {
       appBar: MyAppBar(
         title: Text('New Todo'),
       ),
-      // CONTENT
       body: TodoForm(),
     );
   }
