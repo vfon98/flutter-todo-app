@@ -1,15 +1,22 @@
+import 'dart:convert';
 import 'dart:developer';
 
-import 'package:todo_ptn_tech_talks/models/todo.dart';
-
 import 'package:http/http.dart' as http;
+import 'package:todo_ptn_tech_talks/models/todo.dart';
 
 class TodoAPI {
   final String baseURL = '5cd831770cc5100014f1e40b.mockapi.io';
 
-  Future<Todo> getAllTodos() async {
+  Future<List<Todo>> getAllTodos() async {
     final response = await http.get(Uri.https(baseURL, 'todo-flutter'));
-    inspect(response);
+    if (response.statusCode == 200) {
+      var todosJson = jsonDecode(response.body);
+      return (todosJson as List)
+          .map((todo) => new Todo.fromJson(todo))
+          .toList();
+    } else {
+      throw Exception('Failed to load Todos');
+    }
   }
 
   Future<Todo> getTodoById({String id}) async {

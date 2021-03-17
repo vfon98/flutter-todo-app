@@ -23,7 +23,7 @@ class TodoForm extends StatefulWidget {
 
 class _TodoFormState extends State<TodoForm> {
   final _formKey = new GlobalKey<FormState>();
-  final Todo newTodo = new Todo('', '', '', '');
+  final Todo newTodo = new Todo(id: '', title: '', time: '', description: '');
 
   TimeOfDay _selectedTime;
   TextEditingController _controllerTime = TextEditingController();

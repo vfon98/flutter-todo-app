@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:todo_ptn_tech_talks/api/todo-apis.dart';
 import 'package:todo_ptn_tech_talks/models/todo.dart';
 import 'package:todo_ptn_tech_talks/widgets/app_bar/my_app_bar.dart';
 
@@ -90,14 +92,23 @@ class TodoList extends StatefulWidget {
 }
 
 class _TodoListState extends State<TodoList> {
-  var data = ['Flutter Introduction', 'Flutter Setup', 'Initialize Code'];
-
-  final List<Todo> todos = [
-    Todo('1', 'Flutter Introduction', '8:00 PM', 'Introduction Flutter'),
-    Todo('2', 'Flutter Setup', '8:30 PM', 'Introduction Flutter'),
-    Todo('3', 'Flutter Init', '8:45 PM', 'Introduction Flutter'),
-    Todo('3', 'Flutter Demo', '10:00 PM', 'Introduction Flutter'),
+  List<Todo> todos = [
+    // Todo('1', 'Flutter Introduction', '8:00 PM', 'Introduction Flutter'),
+    // Todo('2', 'Flutter Setup', '8:30 PM', 'Introduction Flutter'),
+    // Todo('3', 'Flutter Init', '8:45 PM', 'Introduction Flutter'),
+    // Todo('3', 'Flutter Dem', '10:00 PM', 'Introduction Flutter'),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    var todoAPI = new TodoAPI();
+    todoAPI.getAllTodos().then((value) {
+      setState(() {
+        todos = value;
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

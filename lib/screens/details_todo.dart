@@ -7,6 +7,10 @@ class DetailsTodoScreen extends StatelessWidget {
 
   const DetailsTodoScreen({Key key, @required this.todo}) : super(key: key);
 
+  deleteTodo(String id) {
+    print('Deleting $id');
+  }
+
   @override
   Widget build(BuildContext context) {
     print(todo);
@@ -31,19 +35,28 @@ class DetailsTodoScreen extends StatelessWidget {
                     size: 32,
                   ),
                 ),
+                Divider(),
+                SizedBox(height: 8),
                 ListTile(
-                  title: Text(todo.description),
-                  leading: Text(
+                  title: Text(
                     'Description:',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
+                  subtitle: Text(todo.description),
                 ),
                 ListTile(
-                  title: Text(todo.time),
-                  leading: Text(
+                  title: Text(
                     'Time:',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
+                  subtitle: Text(todo.time),
+                ),
+                ListTile(
+                  title: Text(
+                    'Created At:',
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ),
+                  subtitle: Text(todo.createdAt.toString()),
                 ),
                 SizedBox(height: 16),
                 Container(
@@ -62,6 +75,27 @@ class DetailsTodoScreen extends StatelessWidget {
                     ),
                     onPressed: () {
                       Navigator.pop(context);
+                    },
+                  ),
+                ),
+                SizedBox(height: 16),
+                Container(
+                  height: 40,
+                  width: double.infinity,
+                  child: RaisedButton(
+                    color: Colors.red,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.delete),
+                        Text(
+                          'Delete',
+                          style: TextStyle(fontSize: 18),
+                        ),
+                      ],
+                    ),
+                    onPressed: () {
+                      deleteTodo(todo.id);
                     },
                   ),
                 )
