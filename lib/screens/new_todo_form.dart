@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:todo_ptn_tech_talks/models/todo.dart';
 import 'package:todo_ptn_tech_talks/widgets/app_bar/my_app_bar.dart';
+import 'package:todo_ptn_tech_talks/api/todo-apis.dart';
 
 class NewTodoFormScreen extends StatelessWidget {
   const NewTodoFormScreen({Key key}) : super(key: key);
@@ -37,6 +40,17 @@ class _TodoFormState extends State<TodoForm> {
   void dispose() {
     _controllerTime.dispose();
     super.dispose();
+  }
+
+  void handleSubmit() async {
+    if (_formKey.currentState.validate()) {
+      _formKey.currentState.save();
+      inspect(newTodo);
+      var todoAPI = new TodoAPI();
+      final res = await todoAPI.postTodo(newTodo);
+      inspect(res);
+      Navigator.pop(context, newTodo);
+    }
   }
 
   @override
@@ -100,12 +114,7 @@ class _TodoFormState extends State<TodoForm> {
                   'Confirm',
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
-                onPressed: () {
-                  if (_formKey.currentState.validate()) {
-                    _formKey.currentState.save();
-                    Navigator.pop(context, newTodo);
-                  }
-                },
+                onPressed: handleSubmit,
               ),
             )
           ],

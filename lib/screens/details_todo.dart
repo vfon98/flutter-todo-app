@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:todo_ptn_tech_talks/api/todo-apis.dart';
 import 'package:todo_ptn_tech_talks/models/todo.dart';
 import 'package:todo_ptn_tech_talks/widgets/app_bar/my_app_bar.dart';
 
@@ -7,7 +8,9 @@ class DetailsTodoScreen extends StatelessWidget {
 
   const DetailsTodoScreen({Key key, @required this.todo}) : super(key: key);
 
-  deleteTodo(String id) {
+  deleteTodo(String id) async {
+    final todoAPI = new TodoAPI();
+    await todoAPI.deleteTodo(id);
     print('Deleting $id');
   }
 
@@ -94,8 +97,9 @@ class DetailsTodoScreen extends StatelessWidget {
                         ),
                       ],
                     ),
-                    onPressed: () {
-                      deleteTodo(todo.id);
+                    onPressed: () async {
+                      await deleteTodo(todo.id);
+                      Navigator.pop(context);
                     },
                   ),
                 )
