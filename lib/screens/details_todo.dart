@@ -9,8 +9,7 @@ class DetailsTodoScreen extends StatelessWidget {
   const DetailsTodoScreen({Key key, @required this.todo}) : super(key: key);
 
   deleteTodo(String id) async {
-    final todoAPI = new TodoAPI();
-    await todoAPI.deleteTodo(id);
+    await TodoAPI.deleteTodo(id);
     print('Deleting $id');
   }
 
@@ -59,7 +58,9 @@ class DetailsTodoScreen extends StatelessWidget {
                     'Created At:',
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
-                  subtitle: Text(todo.createdAt.toString()),
+                  subtitle: Text(
+                      DateTime.fromMillisecondsSinceEpoch(todo.createdAt * 1000)
+                          .toString()),
                 ),
                 SizedBox(height: 16),
                 Container(
@@ -77,7 +78,7 @@ class DetailsTodoScreen extends StatelessWidget {
                       ],
                     ),
                     onPressed: () {
-                      Navigator.pop(context);
+                      Navigator.pop(context, null);
                     },
                   ),
                 ),
@@ -98,8 +99,8 @@ class DetailsTodoScreen extends StatelessWidget {
                       ],
                     ),
                     onPressed: () async {
-                      await deleteTodo(todo.id);
-                      Navigator.pop(context);
+                      final response = await deleteTodo(todo.id);
+                      Navigator.pop(context, response);
                     },
                   ),
                 )

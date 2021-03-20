@@ -1,6 +1,3 @@
-import 'dart:convert';
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:todo_ptn_tech_talks/api/todo-apis.dart';
 import 'package:todo_ptn_tech_talks/models/todo.dart';
@@ -8,6 +5,8 @@ import 'package:todo_ptn_tech_talks/widgets/app_bar/my_app_bar.dart';
 
 import 'details_todo.dart';
 import 'new_todo_form.dart';
+
+GlobalKey<_TodoListState> _todoListKey = GlobalKey();
 
 class HomeScreen extends StatelessWidget {
   final String title = 'Flutter Todo App';
@@ -28,10 +27,10 @@ class HomeScreen extends StatelessWidget {
           child: Icon(Icons.add),
           tooltip: 'Add new todo',
           onPressed: () async {
-            final newTodo = await Navigator.push(context,
+            await Navigator.push(context,
                 MaterialPageRoute(builder: (ctx) => NewTodoFormScreen()));
-            print("NEW TODO");
-            inspect(newTodo);
+
+            _todoListKey.currentState.fetchTodos();
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -77,9 +76,7 @@ class TodoCard extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
-            child: TodoList(),
-          )
+          TodoList(key: _todoListKey)
         ],
       ),
     );
@@ -100,47 +97,56 @@ class _TodoListState extends State<TodoList> {
     // Todo('3', 'Flutter Init', '8:45 PM', 'Introduction Flutter'),
     // Todo('3', 'Flutter Dem', '10:00 PM', 'Introduction Flutter'),
   ];
+  bool isLoading = true;
 
   @override
   void initState() {
     super.initState();
-    var todoAPI = new TodoAPI();
-    todoAPI.getAllTodos().then((value) {
+    this.fetchTodos();
+  }
+
+  void fetchTodos() {
+    setState(() => isLoading = true);
+    TodoAPI.getAllTodos().then((value) {
       setState(() {
         todos = value;
+        isLoading = false;
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: todos.length,
-      itemBuilder: (BuildContext context, int index) {
-        final Todo todo = todos[index];
+    if (isLoading) return CircularProgressIndicator();
 
-        return ListTile(
-          key: Key(todo.id),
-          title: Text(
-            todo.title,
-            style: TextStyle(fontSize: 20),
-          ),
-          contentPadding: EdgeInsets.all(8),
-          subtitle: Text(todo.description),
-          leading: FlutterLogo(
-            size: 36,
-          ),
-          // leading:
-          //     Text('8:15 PM', style: TextStyle(fontWeight: FontWeight.bold)),
-          trailing: Icon(Icons.arrow_right_sharp),
-          onTap: () {
-            Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (ctx) => DetailsTodoScreen(todo: todo)));
-          },
-        );
-      },
+    return Expanded(
+      child: ListView.builder(
+        itemCount: todos.length,
+        itemBuilder: (BuildContext context, int index) {
+          final Todo todo = todos[index];
+
+          return ListTile(
+            key: Key(todo.id),
+            title: Text(
+              todo.title,
+              style: TextStyle(fontSize: 20),
+            ),
+            contentPadding: EdgeInsets.all(8),
+            subtitle: Text(todo.description),
+            leading: FlutterLogo(
+              size: 36,
+            ),
+            trailing: Icon(Icons.arrow_right_sharp),
+            onTap: () async {
+              final response = await Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (ctx) => DetailsTodoScreen(todo: todo)));
+              if (response != null) _todoListKey.currentState.fetchTodos();
+            },
+          );
+        },
+      ),
     );
   }
 }

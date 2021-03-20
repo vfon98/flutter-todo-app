@@ -1,9 +1,7 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
+import 'package:todo_ptn_tech_talks/api/todo-apis.dart';
 import 'package:todo_ptn_tech_talks/models/todo.dart';
 import 'package:todo_ptn_tech_talks/widgets/app_bar/my_app_bar.dart';
-import 'package:todo_ptn_tech_talks/api/todo-apis.dart';
 
 class NewTodoFormScreen extends StatelessWidget {
   const NewTodoFormScreen({Key key}) : super(key: key);
@@ -45,10 +43,7 @@ class _TodoFormState extends State<TodoForm> {
   void handleSubmit() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      inspect(newTodo);
-      var todoAPI = new TodoAPI();
-      final res = await todoAPI.postTodo(newTodo);
-      inspect(res);
+      final res = await TodoAPI.postTodo(newTodo);
       Navigator.pop(context, newTodo);
     }
   }
