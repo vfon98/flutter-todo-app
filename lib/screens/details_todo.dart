@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:todo_ptn_tech_talks/api/todo-apis.dart';
+import 'package:todo_ptn_tech_talks/bloc/todo_events.dart';
+import 'package:todo_ptn_tech_talks/bloc/toto_bloc.dart';
 import 'package:todo_ptn_tech_talks/models/todo.dart';
 import 'package:todo_ptn_tech_talks/widgets/app_bar/my_app_bar.dart';
 
 class DetailsTodoScreen extends StatelessWidget {
   final Todo todo;
+  final todoBloc = TodoBloc();
 
-  const DetailsTodoScreen({Key key, @required this.todo}) : super(key: key);
+  DetailsTodoScreen({Key key, @required this.todo}) : super(key: key);
 
   deleteTodo(String id) async {
-    await TodoAPI.deleteTodo(id);
+    // await TodoAPI.deleteTodo(id);
+    todoBloc.eventController.add(DeleteTodoEvent(id));
     print('Deleting $id');
   }
 

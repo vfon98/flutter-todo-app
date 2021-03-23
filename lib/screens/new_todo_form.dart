@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:todo_ptn_tech_talks/api/todo-apis.dart';
+import 'package:todo_ptn_tech_talks/bloc/todo_events.dart';
+import 'package:todo_ptn_tech_talks/bloc/toto_bloc.dart';
 import 'package:todo_ptn_tech_talks/models/todo.dart';
 import 'package:todo_ptn_tech_talks/widgets/app_bar/my_app_bar.dart';
 
@@ -28,6 +30,7 @@ class _TodoFormState extends State<TodoForm> {
 
   TimeOfDay _selectedTime;
   TextEditingController _controllerTime = TextEditingController();
+  final todoBloc = TodoBloc();
 
   @override
   void initState() {
@@ -43,7 +46,8 @@ class _TodoFormState extends State<TodoForm> {
   void handleSubmit() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-      final res = await TodoAPI.postTodo(newTodo);
+      // final res = await TodoAPI.postTodo(newTodo);
+      await todoBloc.eventController.sink.add(AddTodoEvent(newTodo));
       Navigator.pop(context, newTodo);
     }
   }

@@ -1,5 +1,9 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:todo_ptn_tech_talks/api/todo-apis.dart';
+import 'package:todo_ptn_tech_talks/bloc/todo_events.dart';
+import 'package:todo_ptn_tech_talks/bloc/toto_bloc.dart';
 import 'package:todo_ptn_tech_talks/models/todo.dart';
 import 'package:todo_ptn_tech_talks/widgets/app_bar/my_app_bar.dart';
 
@@ -30,7 +34,7 @@ class HomeScreen extends StatelessWidget {
             await Navigator.push(context,
                 MaterialPageRoute(builder: (ctx) => NewTodoFormScreen()));
 
-            _todoListKey.currentState.fetchTodos();
+            // _todoListKey.currentState.fetchTodos();
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -56,7 +60,7 @@ class TodoCard extends StatelessWidget {
               margin: EdgeInsets.all(8),
               padding: EdgeInsets.all(8),
               child: Text(
-                "Card Test",
+                "Todo List",
                 style: TextStyle(fontSize: 24, fontWeight: FontWeight.w500),
               )),
           Container(
@@ -99,20 +103,31 @@ class _TodoListState extends State<TodoList> {
   ];
   bool isLoading = true;
 
+  final todoBloc = TodoBloc();
+  var sub;
+
   @override
   void initState() {
     super.initState();
-    this.fetchTodos();
-  }
+    todoBloc.eventController.sink.add(GetAllTodos());
 
-  void fetchTodos() {
-    setState(() => isLoading = true);
-    TodoAPI.getAllTodos().then((value) {
+    sub = todoBloc.stateController.stream.listen((state) {
+      print("LISTTENENEN");
       setState(() {
-        todos = value;
+        todos = state.todoList;
         isLoading = false;
       });
     });
+  }
+
+  @override
+  void dispose() {
+    print("DISPOS");
+    if (sub != null) {
+      sub.cancel();
+    }
+    todoBloc.dispose();
+    super.dispose();
   }
 
   @override
@@ -142,7 +157,7 @@ class _TodoListState extends State<TodoList> {
                   context,
                   MaterialPageRoute(
                       builder: (ctx) => DetailsTodoScreen(todo: todo)));
-              if (response != null) _todoListKey.currentState.fetchTodos();
+              // if (response != null) _todoListKey.currentState.fetchTodos();
             },
           );
         },
